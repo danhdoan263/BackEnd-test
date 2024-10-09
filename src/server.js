@@ -5,6 +5,7 @@ import 'dotenv/config'
 import { StatusCodes } from 'http-status-codes'
 import { GET_DB, CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
+import { API_v1 } from '~/routes/v1'
 
 
 const START_SERVER = () => {
@@ -16,6 +17,9 @@ const START_SERVER = () => {
     // Test Absolute import mapOrder
     res.end('<h1>Hello World!</h1><hr>')
   })
+
+  app.use('/v1', API_v1)
+
 
   app.listen(env.APP_PORT, env.APP_HOST, () => {
     // eslint-disable-next-line no-console
