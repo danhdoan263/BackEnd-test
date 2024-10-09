@@ -1,15 +1,39 @@
 {
-  "name": "blog_to_learn",
+  "name": "nodejs-expressjs-mongodb-base-project",
+  "private": true,
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "author": "TrungQuanDev - Một Lập Trình Viên",
+  "description": "https://youtube.com/@trungquandev",
+  "engines": {
+    "node": "20.18.0"
+  },
   "scripts": {
-    "start": "nodemon --inspect index.js"
+    "lint": "eslint src --ext js --report-unused-disable-directives --max-warnings 0",
+    "clean": "rm -rf build && mkdir build",
+    "build-babel": "babel ./src -d ./build/src",
+    "build": "npm run clean && npm run build-babel",
+    "production": "npm run build && node ./build/src/server.js",
+    "dev": "nodemon --exec babel-node ./src/server.js"
   },
   "dependencies": {
-    "express": "^4.21.0"
+    "@babel/runtime": "^7.25.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mongodb": "^6.9.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "@babel/cli": "^7.25.7",
+    "@babel/core": "^7.25.7",
+    "@babel/eslint-parser": "^7.25.7",
+    "@babel/node": "^7.25.7",
+    "@babel/plugin-transform-runtime": "^7.25.7",
+    "@babel/preset-env": "^7.25.7",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.12.0",
+    "http-status-codes": "^2.3.0",
+    "json": "^11.0.0",
+    "nodemon": "^3.1.7",
+    "yarn-upgrade-all": "^0.7.4"
   }
 }
