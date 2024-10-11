@@ -6,11 +6,13 @@ import { StatusCodes } from 'http-status-codes'
 import { GET_DB, CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
 import { API_v1 } from '~/routes/v1'
+import { errorHandlingMiddleware } from '~/middlewares/errHandlingMiddleware'
 
 
 const START_SERVER = () => {
   const app = express()
 
+  app.use(express.json())
 
 
   app.get('/', (req, res) => {
@@ -20,6 +22,7 @@ const START_SERVER = () => {
 
   app.use('/v1', API_v1)
 
+  app.use(errorHandlingMiddleware)
 
   app.listen(env.APP_PORT, env.APP_HOST, () => {
     // eslint-disable-next-line no-console
