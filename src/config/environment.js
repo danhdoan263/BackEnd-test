@@ -8,5 +8,6 @@ export const env = {
     APP_PORT: process.env.APP_PORT,
 
     AUTHOR: process.env.AUTHOR,
-    NODE_ENV: process.env.NODE_ENV
+    NODE_ENV: process.env.NODE_ENV,
+    SECRET_TOKEN: process.env.SECRET_TOKEN
 }
