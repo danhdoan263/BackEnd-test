@@ -29,7 +29,7 @@ const login = async (username, password) => {
             }
         }
         const token = jwt.sign({ userId: checkUser._id }, env.SECRET_TOKEN, {
-            expiresIn: '30s'
+            expiresIn: '2d'
         })
         return { error: false, token }
     } catch (error) {
