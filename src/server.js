@@ -8,9 +8,10 @@ import { env } from '~/config/environment'
 import { API_v1 } from '~/routes/v1'
 import { errorHandlingMiddleware } from '~/middlewares/errHandlingMiddleware'
 import cors from 'cors'
+import { corsOptions } from '~/config/cors'
 const START_SERVER = () => {
   const app = express()
-  app.use(cors())
+  app.use(cors(corsOptions))
   app.use(express.json())
 
 
