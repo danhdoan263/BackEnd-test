@@ -26,8 +26,7 @@ const validData = async (data) => {
 const createNew = async (reqBody) => {
     try {
         const validDataBeforeCreate = await validData(reqBody)
-        const createdUser = await GET_DB().collection(USER_COLLECTION_NAME).insertOne(validDataBeforeCreate)
-        return createdUser
+        return await GET_DB().collection(USER_COLLECTION_NAME).insertOne(validDataBeforeCreate)
     } catch (error) {
         throw new Error(error)
     }

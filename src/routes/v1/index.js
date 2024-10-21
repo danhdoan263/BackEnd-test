@@ -1,7 +1,7 @@
 // quản lí router
 import express from "express";
-import { StatusCodes } from "http-status-codes";
 import { boardRouter } from "~/routes/v1/BoardRoute";
+import { postRouter } from "~/routes/v1/postRouter";
 import { userRoute } from "~/routes/v1/userRouter";
 
 
@@ -14,5 +14,6 @@ Router.get('/', (req, res) => {
 // main
 
 Router.use('/user', userRoute)
+Router.use('/post', postRouter)
 
 export const API_v1 = Router
