@@ -9,8 +9,8 @@ Router.route('/create')
         const action = 'post'
         uploadController.uploadManifest(req, res, next, action)
     })
-Router.route('/getPost')
-    .get(postController.getPost)
+Router.route('/getAllPost')
+    .get(postController.getAllPost)
 
 
 export const postRouter = Router
