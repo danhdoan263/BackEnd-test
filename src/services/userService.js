@@ -42,7 +42,14 @@ const login = async (username, password) => {
         throw new Error(error)
     }
 }
+
+//get info user for post 
+const getUserById = async (userids) => {
+    const getUser = await userModel.getUserByIds(userids)
+    return getUser
+}
 export const userService = {
     createNew,
-    login
+    login,
+    getUserById
 }

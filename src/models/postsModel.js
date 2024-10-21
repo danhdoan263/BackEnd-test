@@ -33,16 +33,16 @@ const createNew = async (userId, fileLink, caption) => {
     }
 }
 
-const getPost = async () => {
+const getAllPost = async () => {
     try {
         return await GET_DB().collection(POST_COLLECTION_NAME).find({}).toArray();
     } catch (error) {
-        throw new Error(error)
+        throw new Error('Error in postsModel.getAllPost: ' + error.message);
     }
 }
 
 
 export const postsModel = {
     createNew,
-    getPost
+    getAllPost
 }

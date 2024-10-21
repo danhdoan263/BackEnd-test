@@ -18,17 +18,17 @@ const createNew = async (userId, fileLink, caption) => {
     }
 }
 
-const getPost = async () => {
+const getAllPost = async () => {
     try {
-        const response = await postsModel.getPost()
+        const response = await postsModel.getAllPost()
         return response
     } catch (error) {
-        throw new Error(error)
+        throw new Error('Error in postService.getAllPost: ' + error.message);
     }
 }
 
 
 export const postService = {
     createNew,
-    getPost
+    getAllPost
 }

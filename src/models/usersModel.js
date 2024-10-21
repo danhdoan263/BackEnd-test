@@ -31,11 +31,13 @@ const createNew = async (reqBody) => {
         throw new Error(error)
     }
 }
+
 //find username
 const findUsername = async (username) => {
     return await GET_DB().collection(USER_COLLECTION_NAME).findOne({ username })
 }
 
+//set avatar for user
 const setAvatar = async (userId, UrlPath) => {
     const idx = new ObjectId(userId)
     return await GET_DB().collection(USER_COLLECTION_NAME).updateOne(
@@ -48,8 +50,19 @@ const setAvatar = async (userId, UrlPath) => {
     )
 }
 
+
+// get username by id for post 
+const getUserByIds = async (userids) => {
+    const objectids = userids.map(id => new ObjectId(id))
+
+    return await GET_DB().collection(USER_COLLECTION_NAME)
+        .find({ _id: { $in: objectids } })
+        .toArray();
+}
+
 export const userModel = {
     createNew,
     findUsername,
+    getUserByIds,
     setAvatar
 }
