@@ -1,9 +1,9 @@
 import express, { response } from 'express'
 import { StatusCodes } from 'http-status-codes'
+import { uploadController, uploadfile, uploadSigle } from '~/controllers/uploadController'
 import { userController } from '~/controllers/userController'
 import authTokenMiddleware from '~/middlewares/authTokenMiddleware'
 import { userValidation } from '~/validations/userValidation'
-
 
 const Router = express.Router()
 
@@ -18,12 +18,21 @@ Router.route('/')
             })
         }
     )
+
+Router.route('/login')
+    .post(userController.login)
+
 Router.route('/register')
     .get()
     .post(userValidation.createNew, userController.createNew)
-Router.route('/login')
-    .post(userController.login)
-Router.route('/:id')
+
+
+//get details user
+Router.route('/getDetails')
     .get(authTokenMiddleware)
+
+//upload avatar for user
+Router.route('/uploads')
+    .post(authTokenMiddleware, uploadController.uploadSigle('photo'), uploadController.uploadMainfest)
 
 export const userRoute = Router

@@ -4,14 +4,19 @@ import { env } from "~/config/environment"
 
 const authTokenMiddleware = (req, res, next) => {
     const getToken = req.headers['token']
-    const token = getToken.split(' ')[1]
-    console.log(req.user);
+    console.log(getToken);
 
+    if (!getToken) {
+        res.status(StatusCodes.NOT_FOUND).json({
+            message: 'token invalid'
+        })
+    }
     try {
-        const decoded = jwt.verify(token, env.SECRET_TOKEN);
-        req.user = decoded.userId
-        console.log(req.user);
+        const decoded = jwt.verify(getToken, env.SECRET_TOKEN);
+        console.log(decoded);
 
+        req.user = decoded.userId
+        next();
     } catch (error) {
         return res.status(StatusCodes.FORBIDDEN).json({
             code: 403,
@@ -19,6 +24,7 @@ const authTokenMiddleware = (req, res, next) => {
         })
 
     }
+
 
 }
 
