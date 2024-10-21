@@ -13,8 +13,10 @@ const createNew = async (reqBody) => {
 // jwt login user
 
 const login = async (username, password) => {
+
     try {
         const checkUser = await userModel.findUsername(username)
+
 
         if (!checkUser) {
             return {
@@ -23,6 +25,7 @@ const login = async (username, password) => {
             }
         }
         if (checkUser.password !== password) {
+
             return {
                 error: true,
                 message: 'wrong password'
@@ -31,8 +34,11 @@ const login = async (username, password) => {
         const token = jwt.sign({ userId: checkUser._id }, env.SECRET_TOKEN, {
             expiresIn: '2d'
         })
-        return { error: false, token }
+
+        return { error: false, token, ...checkUser }
     } catch (error) {
+        console.log(error);
+
         throw new Error(error)
     }
 }

@@ -1,14 +1,15 @@
 
-import express from 'express'
-import { mapOrder } from '~/utils/sorts.js'
-import 'dotenv/config'
-import { StatusCodes } from 'http-status-codes'
-import { GET_DB, CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
-import { env } from '~/config/environment'
-import { API_v1 } from '~/routes/v1'
-import { errorHandlingMiddleware } from '~/middlewares/errHandlingMiddleware'
 import cors from 'cors'
+import 'dotenv/config'
+import express from 'express'
+import path from 'path'
 import { corsOptions } from '~/config/cors'
+import { env } from '~/config/environment'
+import { CONNECT_DB } from '~/config/mongodb'
+import { errorHandlingMiddleware } from '~/middlewares/errHandlingMiddleware'
+import { API_v1 } from '~/routes/v1'
+
+
 const START_SERVER = () => {
   const app = express()
   app.use(cors(corsOptions))
@@ -19,7 +20,9 @@ const START_SERVER = () => {
     // Test Absolute import mapOrder
     res.end('<h1>Hello World!</h1><hr>')
   })
-
+  // user upload static file to public get
+  app.use('/uploads', express.static('D:/uploads'));
+  //user api route
   app.use('/v1', API_v1)
 
   app.use(errorHandlingMiddleware)

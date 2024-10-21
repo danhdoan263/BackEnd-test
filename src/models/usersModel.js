@@ -1,12 +1,8 @@
-import { StatusCodes } from "http-status-codes"
-import jwt from "jsonwebtoken"
+import { ObjectId } from "mongodb"
 
 const Joi = require("joi")
 const { GET_DB } = require("~/config/mongodb")
 const { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } = require("~/utils/validators")
-
-
-
 
 const USER_COLLECTION_NAME = 'users'
 const USER_COLLECTION_SCHEMA = Joi.object({
@@ -40,7 +36,21 @@ const createNew = async (reqBody) => {
 const findUsername = async (username) => {
     return await GET_DB().collection(USER_COLLECTION_NAME).findOne({ username })
 }
+
+const setAvatar = async (userId, UrlPath) => {
+    const idx = new ObjectId(userId)
+    return await GET_DB().collection(USER_COLLECTION_NAME).updateOne(
+        { _id: idx },
+        {
+            $set: {
+                profile_url_img: UrlPath
+            }
+        }
+    )
+}
+
 export const userModel = {
     createNew,
     findUsername,
+    setAvatar
 }
