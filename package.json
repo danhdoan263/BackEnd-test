@@ -39,5 +39,8 @@
     "json": "^11.0.0",
     "nodemon": "^3.1.7",
     "yarn-upgrade-all": "^0.7.4"
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }
