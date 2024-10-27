@@ -46,16 +46,29 @@ const getAllPost = async (req, res, next) => {
 //in like post get user_id from auth token and get post_id from params
 const likePost = async (req, res, next) => {
   const { post_id } = req.query;
+  console.log(req.query);
+
+  if (!post_id) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: 'Post ID is required',
+    });
+  }
 
   const userLike_id = req.user;
 
   //update like to userList
   const response = await postService.likePost(post_id, userLike_id);
-
+  console.log(response);
+  const countLike = await postService.countLike(post_id);
   if (response) {
     res.status(StatusCodes.OK).json({
       message: 'like post successfully',
       info: response,
+      likes: countLike.userList.length,
+    });
+  } else {
+    res.status(StatusCodes.NOT_FOUND).json({
+      message: 'Post not found or like action failed',
     });
   }
 };
@@ -71,8 +84,35 @@ const getLikePost = async (req, res) => {
   }
 };
 
+const deletePost = async (req, res) => {
+  const { post_id } = req.query;
+
+  //run 2 await need dive 2 threads
+  const [response, responseScore] = await Promise.all([
+    postService.deletePost(post_id),
+    postService.deletePostScore(post_id),
+  ]);
+
+  if (response.deletedCount !== 0) {
+    res.status(StatusCodes.OK).json({
+      message: `deleted post id:${post_id}`,
+      code: StatusCodes.OK,
+      response: response,
+      postScore: responseScore,
+    });
+  } else {
+    res.status(StatusCodes.NOT_FOUND).json({
+      message: `post id: ${post_id} not found`,
+      code: StatusCodes.NOT_FOUND,
+      response: response,
+      postScore: responseScore,
+    });
+  }
+};
+
 export const postController = {
   getAllPost,
   likePost,
   getLikePost,
+  deletePost,
 };

@@ -12,6 +12,9 @@ Router.route('/create').post(
     uploadController.uploadManifest(req, res, next, action);
   }
 );
+
+Router.route('/delete').post(authTokenMiddleware, postController.deletePost);
+
 Router.route('/getAllPost').get(postController.getAllPost);
 
 Router.route('/like')
