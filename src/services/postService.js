@@ -1,3 +1,4 @@
+import { postCommentModel } from '~/models/postCommentModel';
 import { postScoreModel } from '~/models/postScoreModel';
 import { postsModel } from '~/models/postsModel';
 
@@ -42,6 +43,42 @@ const countLike = async (post_id) => {
   return countLike;
 };
 
+const creteNewComment = async (data) => {
+  const response = await postCommentModel.createNew(data);
+
+  if (response.acknowledged) {
+    const commentInfo = await postCommentModel.findOneComment(
+      response.insertedId
+    );
+    return commentInfo;
+  } else {
+    return response;
+  }
+};
+
+const getAllComment = async () => {
+  const response = await postCommentModel.findAllComment();
+  if (response.length > 0) {
+    return response;
+  } else {
+    return { message: 'comments not found' };
+  }
+};
+
+const findCommentByPostId = async (id) => {
+  const response = await postCommentModel.findCommentByPostId(id);
+  if (response.length > 0) {
+    return response;
+  } else {
+    return { message: 'comments not found' };
+  }
+};
+
+const createNewReply = async (data) => {
+  const response = await postCommentModel.createNewReply(data);
+  return response;
+};
+
 export const postService = {
   createNew,
   getAllPost,
@@ -49,4 +86,8 @@ export const postService = {
   countLike,
   deletePost,
   deletePostScore,
+  creteNewComment,
+  createNewReply,
+  getAllComment,
+  findCommentByPostId,
 };
