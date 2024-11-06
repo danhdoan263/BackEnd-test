@@ -21,4 +21,8 @@ Router.route('/like')
   .get(authTokenMiddleware, postController.getLikePost)
   .post(authTokenMiddleware, postController.likePost);
 
+Router.route('/comment')
+  .get(postController.findCommentByPostId)
+  .post(postController.creteNewComment);
+
 export const postRouter = Router;
