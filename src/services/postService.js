@@ -55,6 +55,10 @@ const creteNewComment = async (data) => {
     return response;
   }
 };
+const deleteCommentById = async (id) => {
+  const response = await postCommentModel.deleteCommentById(id);
+  return response;
+};
 
 const getAllComment = async () => {
   const response = await postCommentModel.findAllComment();
@@ -87,6 +91,7 @@ export const postService = {
   deletePost,
   deletePostScore,
   creteNewComment,
+  deleteCommentById,
   createNewReply,
   getAllComment,
   findCommentByPostId,

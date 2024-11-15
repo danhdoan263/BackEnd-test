@@ -107,29 +107,7 @@ const deletePost = async (req, res) => {
 };
 
 const creteNewComment = async (req, res) => {
-  // const [data] = req.body.commentData;
-  // if (data.parent_id) {
-  //   try {
-  //     const response = await postService.createNewReply(data);
-  //     res.status(StatusCodes.OK).json({ data, response });
-  //   } catch (error) {
-  //      res
-  //        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-  //        .json({ message: 'Error creating comment' });
-  //   }
-  // }
-  // else {
-  //   try {
-  //     const response = await postService.creteNewComment(data);
-  //     res.status(StatusCodes.OK).json({ data, response });
-  //   } catch (error) {
-  //     res
-  //       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-  //       .json({ message: 'Error creating comment' });
-  //   }
-  // }
-
-  const [data] = req.body.commentData;
+  const data = req.body;
   const createCommentFn = data.parent_id
     ? postService.createNewReply
     : postService.creteNewComment;
@@ -141,6 +119,21 @@ const creteNewComment = async (req, res) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: 'Error creating comment' });
+  }
+};
+
+const deleteCommentById = async (req, res) => {
+  try {
+    const { comment_id } = req.query;
+    const response = await postService.deleteCommentById(comment_id);
+    if (response) {
+      res.status(StatusCodes.OK).json({
+        status: response,
+        code: StatusCodes.OK,
+      });
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -176,6 +169,7 @@ export const postController = {
   getLikePost,
   deletePost,
   creteNewComment,
+  deleteCommentById,
   getAllComment,
   findCommentByPostId,
 };

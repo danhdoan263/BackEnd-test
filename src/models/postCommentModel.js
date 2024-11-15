@@ -91,26 +91,36 @@ const createNew = async (data) => {
     .collection(POSTCOMMENT_COLLECTION_NAME)
     .insertOne(validData);
 };
-
+//here for root comment
 const createNewReply = async (data) => {
   console.log(data);
   const validdata = await POSTREPLIES_COLLECTION_SCHEMA.validateAsync(data, {
     abortEarly: false,
   });
   console.log(validdata);
-
+  const idx = new ObjectId(data.parent_id);
   return await GET_DB()
     .collection(POSTCOMMENT_COLLECTION_NAME)
     .updateOne(
-      { post_id: data.post_id },
+      { _id: idx },
       {
         $push: {
           replies: {
-            validdata,
+            parent_id: validdata.parent_id,
+            comment: validdata.comment,
+            user_id: validdata.user_id,
+            post_id: validdata.post_id,
           },
         },
       }
     );
+};
+
+const deleteCommentById = async (id) => {
+  const idx = new ObjectId(id);
+  return await GET_DB().collection(POSTCOMMENT_COLLECTION_NAME).deleteOne({
+    _id: idx,
+  });
 };
 
 const findOneComment = async (id) => {
@@ -146,4 +156,5 @@ export const postCommentModel = {
   findOneComment,
   findAllComment,
   findCommentByPostId,
+  deleteCommentById,
 };
