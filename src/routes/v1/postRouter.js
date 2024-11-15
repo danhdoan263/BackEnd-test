@@ -23,6 +23,7 @@ Router.route('/like')
 
 Router.route('/comment')
   .get(postController.findCommentByPostId)
-  .post(postController.creteNewComment);
+  .post(postController.creteNewComment)
+  .delete(postController.deleteCommentById);
 
 export const postRouter = Router;
