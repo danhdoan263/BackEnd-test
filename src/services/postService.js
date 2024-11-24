@@ -4,8 +4,9 @@ import { postsModel } from '~/models/postsModel';
 
 const createNew = async (userId, fileLink, caption) => {
   try {
-    const createPost = await postsModel.createNew(userId, fileLink, caption);
+    console.log('post variable: ', userId, fileLink, caption);
 
+    const createPost = await postsModel.createNew(userId, fileLink, caption);
     return createPost;
   } catch (error) {
     throw new Error(error);
