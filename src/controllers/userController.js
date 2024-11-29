@@ -68,23 +68,35 @@ const getDetails = async (req, res) => {
 const followAnUser = async (req, res) => {
   const user_id = req.body.user_id;
   const otherUser_id = req.body.otherUser_id;
-  if ((user_id || otherUser_id) === (null || undefined)) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      code: StatusCodes.BAD_REQUEST,
-      message: 'something invalid id',
-      user_id: user_id,
-      otherUser_id: otherUser_id,
-    });
-  }
+
   try {
+    if (user_id == null || otherUser_id == null) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        code: StatusCodes.BAD_REQUEST,
+        message: 'something invalid id',
+        user_id: user_id,
+        otherUser_id: otherUser_id,
+      });
+    }
+
+    const getUserFollowed = await userService.getUserFollower(user_id);
+    const checkUserFollowExits = getUserFollowed.some((follower) => {
+      if (follower.following_id === otherUser_id) {
+        return true;
+      }
+    });
+    if (checkUserFollowExits) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: `followed user ${otherUser_id} yet`,
+      });
+    }
+
     const response = await userService.followingUser(user_id, otherUser_id);
     if (response) {
-      res.status(StatusCodes.OK).json({
+      return res.status(StatusCodes.OK).json({
         message: `successfully following ${otherUser_id}`,
         code: StatusCodes.OK,
       });
-    } else {
-      console.log(response);
     }
   } catch (error) {
     console.log(error);
@@ -98,11 +110,13 @@ const checkIdRule = (id) => {
 };
 const unFollowAnUser = async (req, res) => {
   try {
-    const { user_id, otherUser_id } = req.body;
+    const { user_id, otherUser_id } = req.query;
+    console.log(user_id, otherUser_id);
+
     if (checkIdRule(user_id) && checkIdRule(otherUser_id) === true) {
       const response = await userService.unFollowAnUser(user_id, otherUser_id);
       console.log(response);
-      res.status(StatusCodes.BAD_REQUEST).json({
+      res.status(StatusCodes.OK).json({
         message: `unfollow user ${otherUser_id}`,
         response: response,
       });
@@ -121,9 +135,14 @@ const unFollowAnUser = async (req, res) => {
 const getUserFollower = async (req, res) => {
   const { user_id } = req.query;
   const response = await userService.getUserFollower(user_id);
-  console.log(response);
+  const listUserFollowedId = [];
+  response.map((userfollowing_id) => {
+    listUserFollowedId.push(userfollowing_id.following_id);
+  });
+  const result = await userService.getUserById(listUserFollowedId);
+  const resultRmPw = result.map(({ password, ...rest }) => rest);
   res.status(StatusCodes.OK).json({
-    follower: response,
+    follower: resultRmPw,
   });
 };
 

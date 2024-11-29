@@ -39,11 +39,14 @@ const createNew = async (roomId, sender, message) => {
   }
 };
 
-const getMessage = async (data) => {
-  const { roomId } = data;
-  return await GET_DB().collection(MESSAGE_MODEL_NAME).find({
-    roomId: roomId,
-  });
+const getMessage = async (roomid) => {
+  const response = await GET_DB()
+    .collection(MESSAGE_MODEL_NAME)
+    .find({
+      roomId: roomid,
+    })
+    .toArray();
+  return response;
 };
 
 export const messageModel = {

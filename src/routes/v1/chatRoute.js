@@ -3,6 +3,5 @@ import { chatController } from '~/controllers/chatController';
 
 const Route = express.Router();
 
-Route.route('/createChat').post(chatController.createNew);
-Route.route('/chat').get(chatController.sendMessage);
+Route.route('/').post(chatController.createNew);
 export const chatRoute = Route;
