@@ -1,49 +1,66 @@
+import { StatusCodes } from 'http-status-codes';
 import { chatService } from '~/services/chatService';
 
 // Tạo phòng chat mới
 const createNew = async (req, res) => {
   try {
-    const { userId1, userId2 } = req.body;
-    const data = {
-      userId1: userId1,
-      userId2: userId2,
-    };
-    console.log(data);
+    const { user_id, otherUser_id } = req.body;
 
-    // Kiểm tra và tạo phòng chat mới
-    const room = await chatService.createNew(data);
-    res.status(200).json({ response: room });
+    const checkRoomExitBeforeCreate = await chatService.getRoomByUserId(
+      user_id,
+      otherUser_id
+    );
+
+    if (checkRoomExitBeforeCreate) {
+      res.status(StatusCodes.OK).json({
+        roomId: checkRoomExitBeforeCreate._id,
+      });
+    } else {
+      const createNewRoom = await chatService.createNew(user_id, otherUser_id);
+
+      if (createNewRoom) {
+        res.status(StatusCodes.OK).json({
+          message: 'create success',
+          roomId: createNewRoom._id,
+        });
+      }
+    }
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
 // Gửi tin nhắn
-const sendMessage = async (req, res) => {
+const saveMessage = async (saveMessage) => {
   try {
-    const { roomId, sender, message } = req.body;
-
     // Lưu tin nhắn vào database
-    const newMessage = await chatService.saveMessage(roomId, sender, message);
-
-    res.status(200).json(newMessage);
+    const { roomId, sender, newMessage, otherUser_id } = saveMessage;
+    const saveNewMessage = await chatService.saveMessage(
+      roomId,
+      sender,
+      newMessage,
+      otherUser_id
+    );
+    console.log('saveMessage from controller', saveNewMessage);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.log(err);
   }
 };
 
 // Lấy tin nhắn trong phòng
-const getMessages = async (req, res) => {
+const getMessages = async (recieveData) => {
   try {
-    const { roomId, limit, page } = req.query;
-    const messages = await chatService.getMessagesByRoomId(roomId, limit, page);
-    res.status(200).json(messages);
+    const { sender, otherUser_id, roomId } = recieveData;
+
+    const messages = await chatService.getMessagesByRoomId(roomId);
+    return messages;
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.log(err.message);
   }
 };
 
 export const chatController = {
   createNew,
-  sendMessage,
+  saveMessage,
+  getMessages,
 };

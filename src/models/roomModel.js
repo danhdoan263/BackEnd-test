@@ -22,16 +22,14 @@ const validateData = async (newData) => {
 };
 
 //create room when user active room chat first time
-const createNew = async (data) => {
+const createNew = async (user_id, otherUser_id) => {
   try {
-    const { userId1, userId2 } = data;
-    const response = await getRoomByUserId(data);
+    const response = await getRoomByUserId(user_id, otherUser_id);
     if (!response) {
       const newData = {
-        userIDs: [userId1, userId2],
+        userIDs: [user_id, otherUser_id],
       };
       const valid = await validateData(newData);
-      console.log(valid);
 
       return await GET_DB().collection(ROOM_SCHEMA_NAME).insertOne(valid);
     } else {
@@ -41,29 +39,28 @@ const createNew = async (data) => {
     console.error(error);
   }
 };
-const getRoomByUserId = async (data) => {
-  const { userId1, userId2 } = data;
+const getRoomByUserId = async (userId1, userId2) => {
   const room = await GET_DB()
     .collection(ROOM_SCHEMA_NAME)
     .findOne({
       userIDs: { $all: [userId1, userId2] },
-      $expr: { $eq: [{ $size: '$userIDs' }, 2] },
     });
 
-  return room || false;
+  return room;
 };
 
-const checkRoomExits = async (roomId, sender, message) => {
-  console.log('roomId', roomId);
-
+const checkRoomExits = async (roomId, sender, otherUser_id) => {
   const roomIdx = new ObjectId(roomId);
-  const response = await GET_DB().collection(ROOM_SCHEMA_NAME).findOne({
-    _id: roomIdx,
-  });
-  console.log(response);
+  const response = await GET_DB()
+    .collection(ROOM_SCHEMA_NAME)
+    .findOne({
+      _id: roomIdx,
+      userIDs: { $all: [sender, otherUser_id] },
+    });
 
   return response;
 };
+
 export const roomModel = {
   createNew,
   getRoomByUserId,
