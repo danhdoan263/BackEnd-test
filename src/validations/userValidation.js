@@ -15,12 +15,12 @@ const createNew = async (req, res, next) => {
   });
   try {
     await validateData.validateAsync(req.body, { abortEarly: false });
-    // throw new Error('API: validate data from board validate')
+   
     next();
   } catch (error) {
     const errorMessage = new Error(error).message;
     const customError = new ApiError(StatusCodes.BAD_GATEWAY, errorMessage);
-    next(customError); // gửi cái error này sang cho bên middleware
+    next(customError); 
   }
 };
 
